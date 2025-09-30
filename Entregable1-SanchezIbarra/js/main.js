@@ -25,11 +25,15 @@ const solicitarCiudad = () => {
 
 //Busca el índice de la ciudad ingresada por el usuario en el array de ciudades.
 const obtenerIndiceCiudad = (nombreCiudad) => {
-  const ciudadesNormalizadas = [];
-  for (let i = 0; i < ciudades.length; i++) {
-    ciudadesNormalizadas.push(ciudades[i].toLowerCase().trim());
+  const nombreBuscado = nombreCiudad.toLowerCase().trim();
+  let i = 0;
+  for (const ciudad of ciudades) {
+    if (ciudad.toLowerCase().trim() === nombreBuscado) {
+      return i;
+    }
+    i++;
   }
-  return ciudadesNormalizadas.indexOf(nombreCiudad.toLowerCase().trim());
+  return -1;
 };
 
 //Muestra el clima correspondiente a la ciudad ingresada.
