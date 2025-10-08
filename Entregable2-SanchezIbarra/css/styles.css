@@ -34,3 +34,30 @@
   background-color: #f8b763;
   border-radius: 4px;
 }
+#cards-section div:hover {
+  background-color: #f0a33e;
+  cursor: pointer;
+}
+.favorite-button {
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 10rem;
+  align-self: center;
+}
+.favorite-button:hover {
+  background-color: #e65b50;
+  cursor: pointer;
+}
+#cards-section img {
+  width: 100%;
+  height: 10rem;
+  object-fit: cover;
+  border-radius: 4px;
+}

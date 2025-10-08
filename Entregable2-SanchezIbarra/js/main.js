@@ -7,6 +7,7 @@ let ciudades = [
     longitud: -74.006,
     clima: "Soleado",
     temperatura: 23.0,
+    imagen: "./images/nueva-york.jpg",
   },
   {
     nombre: "Londres",
@@ -16,6 +17,7 @@ let ciudades = [
     longitud: -0.1278,
     clima: "Nublado",
     temperatura: 17.5,
+    imagen: "./images/londres.jpg",
   },
   {
     nombre: "Tokio",
@@ -25,6 +27,7 @@ let ciudades = [
     longitud: 139.6917,
     clima: "Parcialmente nublado",
     temperatura: 20.2,
+    imagen: "./images/tokyo.jpg",
   },
   {
     nombre: "París",
@@ -34,6 +37,7 @@ let ciudades = [
     longitud: 2.3522,
     clima: "Lluvia ligera",
     temperatura: 16.7,
+    imagen: "./images/paris.jpg",
   },
   {
     nombre: "Sídney",
@@ -43,6 +47,7 @@ let ciudades = [
     longitud: 151.2093,
     clima: "Chubascos",
     temperatura: 19.1,
+    imagen: "./images/sidney.jpg",
   },
   {
     nombre: "São Paulo",
@@ -52,6 +57,7 @@ let ciudades = [
     longitud: -46.6333,
     clima: "Húmedo",
     temperatura: 25.4,
+    imagen: "./images/sao-paulo.jpg",
   },
   {
     nombre: "El Cairo",
@@ -61,6 +67,7 @@ let ciudades = [
     longitud: 31.2357,
     clima: "Despejado",
     temperatura: 27.9,
+    imagen: "./images/el-cairo.jpg",
   },
   {
     nombre: "Bombay",
@@ -70,6 +77,7 @@ let ciudades = [
     longitud: 72.8777,
     clima: "Lluvias intensas",
     temperatura: 29.3,
+    imagen: "./images/bombay.jpg",
   },
   {
     nombre: "Moscú",
@@ -79,6 +87,7 @@ let ciudades = [
     longitud: 37.6173,
     clima: "Cubierto",
     temperatura: 14.6,
+    imagen: "./images/moscu.jpg",
   },
   {
     nombre: "Toronto",
@@ -88,17 +97,26 @@ let ciudades = [
     longitud: -79.347,
     clima: "Ventoso",
     temperatura: 18.2,
+    imagen: "./images/toronto.jpg",
   },
 ];
 
 let contenedorProductos = document.getElementById("cards-section");
 
 function renderCiudades(ciudades) {
-  ciudades.forEach((ciudad) => {
+  ciudades.forEach((ciudad, index) => {
     const card = document.createElement("div");
-    card.innerHTML = `<h2 class="card__title">Ciudad: ${ciudad.nombre}</h2>
-    <h3 class="card__clima">Ciudad: ${ciudad.clima}</h3>`;
+    card.innerHTML = `<h2 class="card__title">${ciudad.nombre}</h2>
+    <h3 class="card__clima">Clima: ${ciudad.clima}</h3>
+    <button class="favorite-button" onclick=(addFavorites(${index}))><span class="material-symbols-outlined">favorite</span>Add to Favorites</button>
+    <img class="card-icon" src="${ciudad.imagen}"></img>`;
     contenedorProductos.appendChild(card);
   });
 }
 renderCiudades(ciudades);
+let favorites = [];
+function addFavorites(index) {
+  const ciudad = ciudades[index];
+  favorites.push(ciudad);
+  console.log(favorites);
+}
