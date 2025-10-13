@@ -14,13 +14,36 @@
   <body>
     <div class="main-container">
       <header class="header">
-        <h1>Entregable 2 - Sanchez Ibarra Jonatan</h1>
+        <div class="header-title">
+          <h1>Entregable 2 - Sanchez Ibarra Jonatan</h1>
+        </div>
+        <div class="header-button">
+          <button class="favorite-button">
+            <span class="material-symbols-outlined">bookmark_heart</span>
+            Mis ciudades favoritas
+          </button>
+        </div>
       </header>
       <main>
+        <div class="filters">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Buscar ciudad..."
+            class="filter-input"
+          ></input>
+          <select id="city-filter" class="filter-button">
+            <option value="" disabled selected>Ordena Alfabeticamente</option>
+            <option value="ascendente">A-Z</option>
+            <option value="descendente">Z-A</option>
+          </select>
+          <button id="clear-filters" class="filter-button">Limpiar filtros</button>
+        </div>
         <section id="intrucciones-section">
           <h3>
-            Da click en una ciudad para conocer más detalles sobre el clima en
-            esa ciudad.
+            Da click en una ciudad para añadirla a tus favoritas, vuelve a dar
+            click para eliminarla de favoritas. Usa el botón "Mis ciudades
+            favoritas" para ver solo tus ciudades favoritas.
           </h3>
         </section>
         <section id="cards-section"></section>

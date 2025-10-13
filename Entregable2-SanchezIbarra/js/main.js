@@ -100,23 +100,102 @@ let ciudades = [
     imagen: "./images/toronto.jpg",
   },
 ];
-
-let contenedorProductos = document.getElementById("cards-section");
+let mostrandoFavoritas = false;
+let contenedorCiudades = document.getElementById("cards-section");
 
 function renderCiudades(ciudades) {
+  contenedorCiudades.innerHTML = "";
   ciudades.forEach((ciudad, index) => {
     const card = document.createElement("div");
     card.innerHTML = `<h2 class="card__title">${ciudad.nombre}</h2>
-    <h3 class="card__clima">Clima: ${ciudad.clima}</h3>
-    <button class="favorite-button" onclick=(addFavorites(${index}))><span class="material-symbols-outlined">favorite</span>Add to Favorites</button>
-    <img class="card-icon" src="${ciudad.imagen}"></img>`;
-    contenedorProductos.appendChild(card);
+      <h3 class="card__clima">Clima: ${ciudad.clima}</h3>
+      <button class="favorite-button"><span class="material-symbols-outlined filled">favorite</span>${
+        mostrandoFavoritas ? "Eliminar de favoritos" : "Añadir a favoritos"
+      }</button>
+      <img class="card-icon" src="${ciudad.imagen}"></img>`;
+    contenedorCiudades.appendChild(card);
+
+    const addFavoritesButton = card.querySelector(".favorite-button");
+    addFavoritesButton.addEventListener("click", function (event) {
+      event.stopPropagation();
+      if (mostrandoFavoritas) {
+        removeFavorite(ciudad.nombre);
+        renderCiudades(favoritos);
+      } else {
+        addFavorites(index);
+      }
+    });
   });
 }
+
+const favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
 renderCiudades(ciudades);
-let favorites = [];
 function addFavorites(index) {
   const ciudad = ciudades[index];
-  favorites.push(ciudad);
-  console.log(favorites);
+  if (!favoritos.some((favorito) => favorito.nombre === ciudad.nombre)) {
+    favoritos.push(ciudad);
+    localStorage.setItem("favoritos", JSON.stringify(favoritos));
+  }
+}
+
+// Mostrar ciudades favoritas
+const botonFavoritos = document.querySelector(
+  ".header-button .favorite-button"
+);
+botonFavoritos.addEventListener("click", function () {
+  mostrandoFavoritas = !mostrandoFavoritas;
+  if (mostrandoFavoritas) {
+    renderCiudades(favoritos);
+    botonFavoritos.innerHTML =
+      '<span class="material-symbols-outlined">public</span>Ver todas las ciudades';
+  } else {
+    renderCiudades(ciudades);
+    botonFavoritos.innerHTML =
+      '<span class="material-symbols-outlined">bookmark_heart</span>Mis ciudades favoritas';
+  }
+});
+
+// Filtro ascendente/descendente
+const ordenarCiudades = document.getElementById("city-filter");
+ordenarCiudades.addEventListener("change", function () {
+  let arrayParaOrdenar = mostrandoFavoritas ? [...favoritos] : [...ciudades];
+  if (ordenarCiudades.value === "ascendente") {
+    arrayParaOrdenar.sort((a, b) => a.nombre.localeCompare(b.nombre));
+  } else if (ordenarCiudades.value === "descendente") {
+    arrayParaOrdenar.sort((a, b) => b.nombre.localeCompare(a.nombre));
+  }
+  renderCiudades(arrayParaOrdenar);
+});
+
+// Limpiar filtros
+const botonLimpiarFiltros = document.getElementById("clear-filters");
+const searchInput = document.getElementById("search-input");
+botonLimpiarFiltros.addEventListener("click", function () {
+  searchInput.value = "";
+  ordenarCiudades.selectedIndex = 0;
+  if (mostrandoFavoritas) {
+    renderCiudades(favoritos);
+  } else {
+    renderCiudades(ciudades);
+  }
+});
+
+// Búsqueda por nombre de ciudad
+searchInput.addEventListener("input", function () {
+  const nombre = searchInput.value.toLowerCase();
+  const lista = mostrandoFavoritas ? favoritos : ciudades;
+  const filtradas = lista.filter((ciudad) =>
+    ciudad.nombre.toLowerCase().includes(nombre)
+  );
+  renderCiudades(filtradas);
+});
+
+// Elimina una ciudad de favoritos por nombre usando filter
+function removeFavorite(nombreCiudad) {
+  const nuevosFavoritos = favoritos.filter(
+    (fav) => fav.nombre !== nombreCiudad
+  );
+  favoritos.length = 0;
+  favoritos.push(...nuevosFavoritos);
+  localStorage.setItem("favoritos", JSON.stringify(favoritos));
 }
