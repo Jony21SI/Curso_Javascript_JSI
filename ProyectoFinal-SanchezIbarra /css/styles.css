@@ -1,0 +1,97 @@
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+.main-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  background-color: #fce0bb;
+  min-height: 100vh;
+}
+.header {
+  display: flex;
+  justify-content: space-between;
+  background-color: #fce0bb;
+  text-align: center;
+  padding: 20px;
+  width: 100%;
+}
+#intrucciones-section {
+  text-align: center;
+  padding: 10px;
+}
+#cards-section {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  background-color: #fce0bb;
+  padding: 10px;
+}
+#cards-section div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 5px;
+  width: 18rem;
+  height: 20rem;
+  border: 2px solid black;
+  background-color: #f8b763;
+  border-radius: 4px;
+}
+#cards-section div:hover {
+  background-color: #f0a33e;
+  cursor: pointer;
+}
+.favorite-button {
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 10rem;
+  align-self: center;
+}
+.favorite-button:hover {
+  background-color: #e65b50;
+  cursor: pointer;
+}
+#cards-section img {
+  width: 100%;
+  height: 10rem;
+  object-fit: cover;
+  border-radius: 4px;
+}
+.material-symbols-outlined.filled {
+  font-variation-settings: "FILL" 1;
+}
+.filters {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 10px;
+  margin-bottom: 10px;
+}
+.filter-input {
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 1rem;
+}
+.filter-button {
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  font-size: 1rem;
+  width: 14rem;
+  cursor: pointer;
+  text-align: center;
+  overflow: ellipsis;
+}

@@ -1,0 +1,53 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>Entregable 2 - Sanchez Ibarra Jonatan</title>
+    <script src="js/main.js" defer></script>
+    <link rel="stylesheet" href="css/styles.css" />
+    <link
+      rel="stylesheet"
+      href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:opsz,wght,FILL,GRAD@20..48,100..700,0..1,-50..200"
+    />
+  </head>
+  <!-- Como Next steps, se planea integrar una API externa para obtener datos en tiempo real de las ciudades, mejorando la presentación de las cards y el manejo de la información, así como mejorar estilos dinámicamente. -->
+  <body>
+    <div class="main-container">
+      <header class="header">
+        <div class="header-title">
+          <h1>Entregable 2 - Sanchez Ibarra Jonatan</h1>
+        </div>
+        <div class="header-button">
+          <button class="favorite-button">
+            <span class="material-symbols-outlined">bookmark_heart</span>
+            Mis ciudades favoritas
+          </button>
+        </div>
+      </header>
+      <main>
+        <div class="filters">
+          <input
+            type="text"
+            id="search-input"
+            placeholder="Buscar ciudad..."
+            class="filter-input"
+          ></input>
+          <select id="city-filter" class="filter-button">
+            <option value="" disabled selected>Ordena Alfabeticamente</option>
+            <option value="ascendente">A-Z</option>
+            <option value="descendente">Z-A</option>
+          </select>
+          <button id="clear-filters" class="filter-button">Limpiar filtros</button>
+        </div>
+        <section id="intrucciones-section">
+          <h3>
+            Da click en una ciudad para añadirla a tus favoritas, usa el botón "Mis ciudades
+            favoritas" para ver solo tus ciudades favoritas.
+          </h3>
+        </section>
+        <section id="cards-section"></section>
+      </main>
+    </div>
+  </body>
+</html>
