@@ -100,7 +100,11 @@ let ciudades = [
     imagen: "./images/toronto.jpg",
   },
 ];
+
+//See if animations will work using animate.css
+
 let mostrandoFavoritas = false;
+let fechasReservadas = [];
 let contenedorCiudades = document.getElementById("cards-section");
 
 function renderCiudades(ciudades) {
@@ -112,6 +116,7 @@ function renderCiudades(ciudades) {
       <button class="favorite-button"><span class="material-symbols-outlined filled">favorite</span>${
         mostrandoFavoritas ? "Eliminar de favoritos" : "Añadir a favoritos"
       }</button>
+      <button class="reservar-button"><span class="material-symbols-outlined filled">flight_land</span>Reserva tu viaje</button>
       <img class="card-icon" src="${ciudad.imagen}"></img>`;
     contenedorCiudades.appendChild(card);
 
@@ -199,3 +204,70 @@ function removeFavorite(nombreCiudad) {
   favoritos.push(...nuevosFavoritos);
   localStorage.setItem("favoritos", JSON.stringify(favoritos));
 }
+
+//Sweetalert
+/* function alertaConfirmacionViaje(imagen, ciudad, clima) {
+  Swal.fire({
+    title: `Tu reserva a ${ciudad} se realizó con éxito`,
+    icon: "success",
+    text: `Buen viaje! El clima en esta ciudad es: ${clima}`,
+    imageUrl: imagen,
+    imageWidth: 400,
+    imageHeight: 200,
+    imageAlt: `Imagen de ${ciudad}`,
+  });
+}
+alertaConfirmacionViaje(
+  ciudades[1].imagen,
+  ciudades[1].nombre,
+  ciudades[1].clima
+); */
+
+//Calendar
+function displayCalendar() {
+  const { Calendar } = window.VanillaCalendarPro;
+  const options = {
+    layouts: {
+      default: `
+      <div class="vc-header" data-vc="header" role="toolbar" aria-label="Calendar Navigation">
+        <div class="vc-header__content" data-vc-header="content">
+          <#Year /> | <#Month />
+        </div>
+        <#ArrowPrev />
+        <#ArrowNext />
+      </div>
+      <div class="vc-wrapper" data-vc="wrapper">
+        <#WeekNumbers />
+        <div class="vc-content" data-vc="content">
+          <#Week />
+          <#Dates />
+          <#DateRangeTooltip />
+        </div>
+      </div>
+      <#ControlTime />
+      <button type="button" id="calendar-button">I am a button</button>
+    `,
+    },
+    type: "default",
+    disableDatesPast: true,
+    enableEdgeDatesOnly: true,
+    selectionDatesMode: "multiple-ranged",
+    locale: "es-MX",
+    onClickDate(self) {
+      console.log(self.context.selectedDates);
+      fechasReservadas = self.context.selectedDates;
+    },
+    //Give style to the Calendar
+    //Add the calendar to a popup when clicking on a city card?
+    //Add a confirmation alert with the reservation dates before confirming dates
+    //Add a button that takes this: self.context.selectedDates and saves that array of dates, and then send that array of dates to the localStorage as the travel dates, An alert from sweet alert should contain that date range
+  };
+  const calendar = new Calendar("#calendar", options);
+  calendar.init();
+}
+displayCalendar();
+const saveDates = document.getElementById("calendar-button");
+saveDates.addEventListener("click", () => {
+  console.log("Tus fechas se guardaron exitosamente");
+  console.log(fechasReservadas);
+});
