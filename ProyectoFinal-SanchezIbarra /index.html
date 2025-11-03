@@ -3,7 +3,7 @@
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <title>Entregable 2 - Sanchez Ibarra Jonatan</title>
+    <title>Proyecto Final - Sanchez Ibarra Jonatan</title>
     <link rel="stylesheet" href="css/styles.css" />
     <!-- Animate.css -->
     <link
@@ -24,7 +24,15 @@
       src="https://cdn.jsdelivr.net/npm/vanilla-calendar-pro/index.js"
       defer
     ></script>
+    <!-- Toastify -->
+    <link
+      rel="stylesheet"
+      type="text/css"
+      href="https://cdn.jsdelivr.net/npm/toastify-js/src/toastify.min.css"
+    />
+    <!-- Main JS -->
     <script src="js/main.js" defer></script>
+    <script src="js/reservas.js" defer></script>
   </head>
   <!-- Como Next steps, se planea integrar una API externa para obtener datos en tiempo real de las ciudades, mejorando la presentación de las cards y el manejo de la información, así como mejorar estilos dinámicamente. -->
 
@@ -32,13 +40,20 @@
     <div class="main-container">
       <header class="header">
         <div class="header-title">
-          <h1>Entregable 2 - Sanchez Ibarra Jonatan</h1>
+          <h1>Proyecto Final - Sanchez Ibarra Jonatan</h1>
         </div>
         <div class="header-button">
-          <button class="favorite-button">
+          <button class="favorite-button header-button__button">
             <span class="material-symbols-outlined">bookmark_heart</span>
             Mis ciudades favoritas
           </button>
+          <a
+            class="favorite-button header-button__button reservations-button"
+            href="./pages/reservationsPage.html"
+          >
+            <span class="material-symbols-outlined">flight</span>
+            Mis Reservas
+          </a>
         </div>
       </header>
       <main>
@@ -72,5 +87,10 @@
     </div>
     <!-- SweetAlert -->
     <script src="https://cdn.jsdelivr.net/npm/sweetalert2@11"></script>
+    <!-- Toastify -->
+    <script
+      type="text/javascript"
+      src="https://cdn.jsdelivr.net/npm/toastify-js"
+    ></script>
   </body>
 </html>

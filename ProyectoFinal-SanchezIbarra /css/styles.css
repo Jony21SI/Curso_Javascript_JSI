@@ -23,6 +23,21 @@
   font-weight: bold;
   color: #333;
 }
+.header-button {
+  display: flex;
+  align-items: center;
+  gap: 0.5rem;
+}
+.header-button__button {
+  height: 3rem;
+}
+.reservations-button {
+  background-color: #748e54 !important;
+  text-decoration: none;
+}
+.reservations-button:hover {
+  background-color: #5a6e42 !important;
+}
 .calendar-section {
   display: flex;
   justify-content: center;
@@ -142,4 +157,41 @@
   cursor: pointer;
   text-align: center;
   overflow: ellipsis;
+}
+.calendar-header {
+  background-color: #8cff00;
+  color: white;
+}
+.vc {
+  background-color: #a37b73 !important;
+  padding: 10px;
+  border-radius: 8px;
+}
+.date-btn {
+  background-color: #49423971;
+  color: white;
+}
+.date-btn:hover {
+  background-color: #6f1a07c6;
+  color: white;
+}
+.vc-date[data-vc-date-selected] .date-btn {
+  background-color: #6f1a07 !important;
+  color: #e1a6a6;
+}
+.date-btn[aria-disabled="true"] {
+  background-color: #49423957;
+  color: #a9a9a9;
+  cursor: not-allowed;
+  opacity: 0.6;
+}
+.vc-date[data-vc-date-today] .date-btn {
+  background-color: #5c4844e7;
+  color: #ffffff;
+  font-weight: bold;
+}
+#calendar .vc-week__day[data-vc-week-day-off] {
+  color: #980808;
+  font-weight: bold;
+  border-radius: 4px;
 }

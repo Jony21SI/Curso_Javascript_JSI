@@ -1,108 +1,16 @@
-let ciudades = [
-  {
-    nombre: "Nueva York",
-    pais: "EE.UU.",
-    poblacion: 8419000,
-    latitud: 40.7128,
-    longitud: -74.006,
-    clima: "Soleado",
-    temperatura: 23.0,
-    imagen: "./images/nueva-york.jpg",
-  },
-  {
-    nombre: "Londres",
-    pais: "Reino Unido",
-    poblacion: 8982000,
-    latitud: 51.5074,
-    longitud: -0.1278,
-    clima: "Nublado",
-    temperatura: 17.5,
-    imagen: "./images/londres.jpg",
-  },
-  {
-    nombre: "Tokio",
-    pais: "Japón",
-    poblacion: 13929000,
-    latitud: 35.6895,
-    longitud: 139.6917,
-    clima: "Parcialmente nublado",
-    temperatura: 20.2,
-    imagen: "./images/tokyo.jpg",
-  },
-  {
-    nombre: "París",
-    pais: "Francia",
-    poblacion: 2148000,
-    latitud: 48.8566,
-    longitud: 2.3522,
-    clima: "Lluvia ligera",
-    temperatura: 16.7,
-    imagen: "./images/paris.jpg",
-  },
-  {
-    nombre: "Sídney",
-    pais: "Australia",
-    poblacion: 5312000,
-    latitud: -33.8688,
-    longitud: 151.2093,
-    clima: "Chubascos",
-    temperatura: 19.1,
-    imagen: "./images/sidney.jpg",
-  },
-  {
-    nombre: "São Paulo",
-    pais: "Brasil",
-    poblacion: 12300000,
-    latitud: -23.5505,
-    longitud: -46.6333,
-    clima: "Húmedo",
-    temperatura: 25.4,
-    imagen: "./images/sao-paulo.jpg",
-  },
-  {
-    nombre: "El Cairo",
-    pais: "Egipto",
-    poblacion: 9900000,
-    latitud: 30.0444,
-    longitud: 31.2357,
-    clima: "Despejado",
-    temperatura: 27.9,
-    imagen: "./images/el-cairo.jpg",
-  },
-  {
-    nombre: "Bombay",
-    pais: "India",
-    poblacion: 12440000,
-    latitud: 19.076,
-    longitud: 72.8777,
-    clima: "Lluvias intensas",
-    temperatura: 29.3,
-    imagen: "./images/bombay.jpg",
-  },
-  {
-    nombre: "Moscú",
-    pais: "Rusia",
-    poblacion: 12500000,
-    latitud: 55.7558,
-    longitud: 37.6173,
-    clima: "Cubierto",
-    temperatura: 14.6,
-    imagen: "./images/moscu.jpg",
-  },
-  {
-    nombre: "Toronto",
-    pais: "Canadá",
-    poblacion: 2930000,
-    latitud: 43.651,
-    longitud: -79.347,
-    clima: "Ventoso",
-    temperatura: 18.2,
-    imagen: "./images/toronto.jpg",
-  },
-];
-
-//See if animations will work using animate.css
-
+const URL = "./db/data.json";
+async function obtenerCiudades() {
+  try {
+    const response = await fetch(URL);
+    const data = await response.json();
+    ciudades = data;
+    renderCiudades(ciudades);
+  } catch (error) {
+    console.error("No fue posible cargar las ciudades", error);
+  }
+}
+obtenerCiudades();
+let ciudades = [];
 let mostrandoFavoritas = false;
 let fechasReservadas = [];
 let contenedorCiudades = document.getElementById("cards-section");
@@ -114,12 +22,13 @@ function renderCiudades(ciudades) {
     card.innerHTML = `<h2 class="card__title">${ciudad.nombre}</h2>
       <h3 class="card__clima">Clima: ${ciudad.clima}</h3>
       <button class="favorite-button"><span class="material-symbols-outlined filled">favorite</span>${
-        mostrandoFavoritas ? "Eliminar de favoritos" : "Añadir a favoritos"
+        mostrandoFavoritas ? "Eliminar de favoritas" : "Añadir a favoritas"
       }</button>
       <button class="reservar-button"><span class="material-symbols-outlined filled">flight_land</span>Reserva tu viaje</button>
       <img class="card-icon" src="${ciudad.imagen}"></img>`;
     contenedorCiudades.appendChild(card);
 
+    // Añadir a Favoritos
     const addFavoritesButton = card.querySelector(".favorite-button");
     addFavoritesButton.addEventListener("click", function (event) {
       event.stopPropagation();
@@ -129,6 +38,13 @@ function renderCiudades(ciudades) {
       } else {
         addFavorites(index);
       }
+    });
+
+    // Reservar Ciudad
+    const reservarButton = card.querySelector(".reservar-button");
+    reservarButton.addEventListener("click", function (event) {
+      event.stopPropagation();
+      openCalendarModal();
     });
   });
 }
@@ -140,6 +56,7 @@ function addFavorites(index) {
   if (!favoritos.some((favorito) => favorito.nombre === ciudad.nombre)) {
     favoritos.push(ciudad);
     localStorage.setItem("favoritos", JSON.stringify(favoritos));
+    addfavoritesAlert();
   }
 }
 
@@ -195,7 +112,7 @@ searchInput.addEventListener("input", function () {
   renderCiudades(filtradas);
 });
 
-// Elimina una ciudad de favoritos por nombre usando filter
+// Elimina una ciudad de favoritos
 function removeFavorite(nombreCiudad) {
   const nuevosFavoritos = favoritos.filter(
     (fav) => fav.nombre !== nombreCiudad
@@ -203,29 +120,40 @@ function removeFavorite(nombreCiudad) {
   favoritos.length = 0;
   favoritos.push(...nuevosFavoritos);
   localStorage.setItem("favoritos", JSON.stringify(favoritos));
+  removeFavoritesAlert();
 }
 
-//Sweetalert
-/* function alertaConfirmacionViaje(imagen, ciudad, clima) {
-  Swal.fire({
-    title: `Tu reserva a ${ciudad} se realizó con éxito`,
-    icon: "success",
-    text: `Buen viaje! El clima en esta ciudad es: ${clima}`,
-    imageUrl: imagen,
-    imageWidth: 400,
-    imageHeight: 200,
-    imageAlt: `Imagen de ${ciudad}`,
-  });
+//Toastify Add Favorites Alert
+function addfavoritesAlert() {
+  Toastify({
+    text: "Ciudad añadida a favoritas",
+    duration: 2500,
+    stopOnFocus: false,
+    style: {
+      background: "linear-gradient(to right, #40ae5bff, #1b7a32ff)",
+    },
+  }).showToast();
 }
-alertaConfirmacionViaje(
-  ciudades[1].imagen,
-  ciudades[1].nombre,
-  ciudades[1].clima
-); */
+//Toastify Add Favorites Alert
+function removeFavoritesAlert() {
+  Toastify({
+    text: "Ciudad eliminada de favoritas",
+    duration: 2500,
+    stopOnFocus: false,
+    style: {
+      background: "linear-gradient(to right, #b71d1dff, #ff4d4d)",
+    },
+  }).showToast();
+}
 
-//Calendar
+//Calendar Display
 function displayCalendar() {
   const { Calendar } = window.VanillaCalendarPro;
+
+  // Obtener el elemento del DOM del modal activo de SweetAlert
+  const swalContainer = document.querySelector(".swal2-html-container");
+  const calendarElement = swalContainer.querySelector(".calendar-placeholder");
+
   const options = {
     layouts: {
       default: `
@@ -245,7 +173,7 @@ function displayCalendar() {
         </div>
       </div>
       <#ControlTime />
-      <button type="button" id="calendar-button">I am a button</button>
+      <button type="button" id="calendar-button">Reserva tu viaje</button>
     `,
     },
     type: "default",
@@ -253,21 +181,163 @@ function displayCalendar() {
     enableEdgeDatesOnly: true,
     selectionDatesMode: "multiple-ranged",
     locale: "es-MX",
+    styles: {
+      dateBtn: "date-btn",
+    },
     onClickDate(self) {
       console.log(self.context.selectedDates);
       fechasReservadas = self.context.selectedDates;
     },
-    //Give style to the Calendar
-    //Add the calendar to a popup when clicking on a city card?
+    //Modify the calendar middle hover
     //Add a confirmation alert with the reservation dates before confirming dates
-    //Add a button that takes this: self.context.selectedDates and saves that array of dates, and then send that array of dates to the localStorage as the travel dates, An alert from sweet alert should contain that date range
+    //Usar 2 archivos js, pero no solo con una funcion, que este bien utilizado
+    //Js para el formulario?
+    //Solicitar datos del usuario al hacer checkout (Formulario de metodo de Pago y Resumen de Compra)
+    //Eliminar console logs
+    //Para los errores poner errores en la interfaz, no en la consola
+    //Validar todos los campos del formulario (Boton con regex?)
+    //Añadir al Local Storage las reservas y agregarlas a ala pagina de reservas
+    //Que las reservas se puedan editar
+
+    /*  -Proyecto estilado, que sea utilizable
+-Minimo 2 archivos, max 4 JS. NO SE USAN MODULE NI EXPORT
+-Respetar la estructura de archivos y carpetas
+-Todo íntegramente con DOM y Eventos
+-Librerias (sweetalert/toastify)
+-Arrays de objetos literal con JSON y Fetch
+-Circuito completo del script
+-Uso de storage como en pre-entrega 2
+-Try-catch-finally
+-Entregar via repositorio de github */
   };
-  const calendar = new Calendar("#calendar", options);
+
+  const calendar = new Calendar(calendarElement, options);
   calendar.init();
 }
-displayCalendar();
-const saveDates = document.getElementById("calendar-button");
-saveDates.addEventListener("click", () => {
-  console.log("Tus fechas se guardaron exitosamente");
-  console.log(fechasReservadas);
-});
+
+function saveDates() {
+  const saveDates = document.getElementById("calendar-button");
+  saveDates.addEventListener("click", () => {
+    console.log("Tus fechas se guardaron exitosamente");
+    console.log(fechasReservadas);
+    openModalFormulario();
+  });
+}
+
+//Funcion para llenar el formulario con datos del cliente
+function openModalFormulario() {
+  Swal.fire({
+    title: "<strong>Ingrese sus datos:</strong>",
+    html: `
+      <label>Nombre(s): <input id="nombre" type="text" required placeholder="Ingrese su nombre"></label><br>
+      <label>Apellido(s): <input id="apellidos" type="text" required placeholder="Ingrese sus apellidos"></label><br>
+      <label>Fecha de nacimiento: <input id="fechaNacimiento" type="date" required placeholder="Seleccione su fecha de nacimiento"></label><br>
+      <label>Nacionalidad: <input id="nacionalidad" type="text" required placeholder="Ingrese su nacionalidad"></label><br>
+      <label>Teléfono de contacto: <input id="telefono" type="tel" required placeholder="Ingrese su número de teléfono"></label><br>
+      <label>Email: <input id="email" type="email" required placeholder="Ingrese su correo electrónico"></label><br>
+    `,
+    showDenyButton: true,
+    confirmButtonText: "Guardar Datos",
+    confirmButtonColor: "#748e54",
+    denyButtonText: `Cancelar`,
+    preConfirm: () => {
+      const nombre = Swal.getPopup().querySelector("#nombre").value;
+      const apellidos = Swal.getPopup().querySelector("#apellidos").value;
+      const fechaNacimiento =
+        Swal.getPopup().querySelector("#fechaNacimiento").value;
+      const nacionalidad = Swal.getPopup().querySelector("#nacionalidad").value;
+      const telefono = Swal.getPopup().querySelector("#telefono").value;
+      const email = Swal.getPopup().querySelector("#email").value;
+
+      // Regex Validation
+      const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+      const phoneRegex = /^\d+$/;
+
+      if (
+        !nombre ||
+        !apellidos ||
+        !fechaNacimiento ||
+        !nacionalidad ||
+        !telefono ||
+        !email
+      ) {
+        Swal.showValidationMessage("Por favor, complete todos los campos");
+      } else if (!emailRegex.test(email)) {
+        Swal.showValidationMessage("Por favor, ingrese un email válido");
+      } else if (!phoneRegex.test(telefono)) {
+        Swal.showValidationMessage(
+          "Por favor, ingrese un número de teléfono válido (solo números)"
+        );
+      }
+      return {
+        nombre,
+        apellidos,
+        fechaNacimiento,
+        nacionalidad,
+        telefono,
+        email,
+      };
+    },
+  }).then((result) => {
+    if (result.isConfirmed) {
+      console.log("Datos guardados:", result.value);
+      confirmarViaje();
+    } else if (result.isDenied) {
+      console.log("El usuario canceló la operación.");
+    }
+  });
+}
+
+//SweetAlert Calendar Modal
+//Agregar el nombre de la ciudad adentro del Strong (Pasar a la función el nombre de la ciudad)
+function openCalendarModal() {
+  Swal.fire({
+    title: "<strong>Selecciona las fechas de tu viaje</strong>",
+    html: `
+      <div class="calendar-placeholder">Calendario</div>
+    `,
+    showCloseButton: true,
+    showConfirmButton: false,
+    didOpen: () => {
+      const calendarContainer = document.querySelector(
+        ".swal2-html-container .calendar-placeholder"
+      );
+      displayCalendar();
+      saveDates();
+    },
+  });
+}
+
+//Confirmación de Agenda de viaje
+function confirmarViaje() {
+  Swal.fire({
+    title: "Desea confirmar su reservación de viaje a ${viaje}?",
+    text: "Para las fechas: ${fecha}",
+    icon: "warning",
+    showCancelButton: true,
+    confirmButtonColor: "#748e54",
+    cancelButtonColor: "#d33",
+    confirmButtonText: "Agendar",
+  }).then((result) => {
+    if (result.isConfirmed) {
+      alertaConfirmacionViaje(
+        ciudades[1].imagen,
+        ciudades[1].nombre,
+        ciudades[1].clima
+      );
+    }
+  });
+}
+//Sweetalert Resumen Confirmación Viaje
+function alertaConfirmacionViaje(imagen, ciudad, clima) {
+  Swal.fire({
+    title: `Tu reserva a ${ciudad} se realizó con éxito`,
+    icon: "success",
+    text: `Buen viaje! El clima en esta ciudad es: ${clima}`,
+    imageUrl: imagen,
+    imageWidth: 400,
+    imageHeight: 200,
+    imageAlt: `Imagen de ${ciudad}`,
+    confirmButtonColor: "#748e54",
+  });
+}
