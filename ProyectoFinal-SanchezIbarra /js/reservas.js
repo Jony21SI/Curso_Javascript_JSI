@@ -19,9 +19,9 @@ function renderReservas(reservas) {
 
       card.innerHTML = `
         <h2 class="card__title">${reserva.nombre}</h2>
-        <h4 class="card__clima">Clima: ${reserva.clima}</h4>
-        <h4 class="card__dates">Fechas: Del ${fechasTexto}</h4>
         <h4 class="card__traveler">Viajero: ${nombreCliente}</h4>
+        <h4 class="card__dates">Fechas: Del ${fechasTexto}</h4>
+        <h4 class="card__clima">Clima: ${reserva.clima}</h4>
         <button class="delete-card-reserva"><span class="material-symbols-outlined">delete</span>Eliminar reserva</button>
         <button class="edit-reserva-button"><span class="material-symbols-outlined">edit</span>Editar reserva</button>
         <img class="card-icon" src=".${reserva.imagen}"></img>
