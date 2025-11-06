@@ -70,15 +70,26 @@
 }
 #intrucciones-section {
   text-align: center;
-  padding: 10px;
+  padding: 20px;
+  margin: 10px auto;
+}
+#intrucciones-section h3 {
+  color: #333;
+  font-size: 1.8rem;
+  margin-bottom: 10px;
+  text-shadow: 2px 2px 4px rgba(0, 0, 0, 0.1);
+}
+#intrucciones-section p {
+  color: #333;
+  font-size: 1rem;
+  line-height: 1.6;
+  margin: 0;
 }
 #cards-section {
   display: flex;
   flex-wrap: wrap;
   justify-content: center;
   gap: 10px;
-  background-color: #fce0bb;
-  background: linear-gradient(to right, #eacda3, #d6ae7b);
   padding: 10px;
 }
 #cards-section div {

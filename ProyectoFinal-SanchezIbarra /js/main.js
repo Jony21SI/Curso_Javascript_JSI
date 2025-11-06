@@ -36,7 +36,6 @@ function renderCiudades(ciudades) {
       event.stopPropagation();
       if (mostrandoFavoritas) {
         removeFavorite(ciudad.nombre);
-        renderCiudades(favoritos);
       } else {
         addFavorites(index);
       }
@@ -60,6 +59,8 @@ function addFavorites(index) {
     favoritos.push(ciudad);
     localStorage.setItem("favoritos", JSON.stringify(favoritos));
     addfavoritesAlert();
+  } else {
+    alreadyInFavoritesAlert();
   }
 }
 
@@ -70,7 +71,12 @@ const botonFavoritos = document.querySelector(
 botonFavoritos.addEventListener("click", function () {
   mostrandoFavoritas = !mostrandoFavoritas;
   if (mostrandoFavoritas) {
-    renderCiudades(favoritos);
+    if (favoritos.length === 0) {
+      contenedorCiudades.innerHTML =
+        "<h2>No tienes favoritos, agrega una ciudad a favoritos.</h2>";
+    } else {
+      renderCiudades(favoritos);
+    }
     botonFavoritos.innerHTML =
       '<span class="material-symbols-outlined">public</span>Ver todas las ciudades';
   } else {
@@ -124,6 +130,12 @@ function removeFavorite(nombreCiudad) {
   favoritos.push(...nuevosFavoritos);
   localStorage.setItem("favoritos", JSON.stringify(favoritos));
   removeFavoritesAlert();
+  if (favoritos.length === 0) {
+    contenedorCiudades.innerHTML =
+      "<h2>No tienes favoritos, agrega una ciudad a favoritos.</h2>";
+  } else {
+    renderCiudades(favoritos);
+  }
 }
 
 //Toastify Alerta Añadir a Favoritos
@@ -134,6 +146,17 @@ function addfavoritesAlert() {
     stopOnFocus: false,
     style: {
       background: "linear-gradient(to right, #40ae5bff, #1b7a32ff)",
+    },
+  }).showToast();
+}
+//Toastify Alerta Ciudad Ya en Favoritos
+function alreadyInFavoritesAlert() {
+  Toastify({
+    text: "Esta ciudad ya está en favoritos",
+    duration: 2500,
+    stopOnFocus: false,
+    style: {
+      background: "linear-gradient(to right, #f39c12, #e67e22)",
     },
   }).showToast();
 }
@@ -187,30 +210,8 @@ function displayCalendar() {
       dateBtn: "date-btn",
     },
     onClickDate(self) {
-      console.log(self.context.selectedDates);
       fechasReservadas = self.context.selectedDates;
     },
-    //Modify the calendar middle hover
-    //Add a confirmation alert with the reservation dates before confirming dates
-    //Usar 2 archivos js, pero no solo con una funcion, que este bien utilizado
-    //Js para el formulario?
-    //Solicitar datos del usuario al hacer checkout (Formulario de metodo de Pago y Resumen de Compra)
-    //Eliminar console logs
-    //Para los errores poner errores en la interfaz, no en la consola
-    //Validar todos los campos del formulario (Boton con regex?)
-    //Añadir al Local Storage las reservas y agregarlas a ala pagina de reservas
-    //Que las reservas se puedan editar
-
-    /*  -Proyecto estilado, que sea utilizable
--Minimo 2 archivos, max 4 JS. NO SE USAN MODULE NI EXPORT
--Respetar la estructura de archivos y carpetas
--Todo íntegramente con DOM y Eventos
--Librerias (sweetalert/toastify)
--Arrays de objetos literal con JSON y Fetch
--Circuito completo del script
--Uso de storage como en pre-entrega 2
--Try-catch-finally
--Entregar via repositorio de github */
   };
 
   const calendar = new Calendar(calendarElement, options);
@@ -225,8 +226,6 @@ function saveDates() {
       Swal.showValidationMessage("Por favor, selecciona al menos una fecha");
       return;
     }
-    console.log("Tus fechas se guardaron exitosamente");
-    console.log(fechasReservadas);
     Swal.close();
     openModalFormulario();
   });
@@ -289,10 +288,7 @@ function openModalFormulario() {
   }).then((result) => {
     if (result.isConfirmed) {
       datosUsuario = result.value;
-      console.log("Datos guardados:", datosUsuario);
       confirmarViaje();
-    } else if (result.isDenied) {
-      console.log("El usuario canceló la operación.");
     }
   });
 }
@@ -318,10 +314,10 @@ function openCalendarModal(nombreCiudad) {
 
 //Confirmación de Agenda de viaje
 function confirmarViaje() {
-  const fechasTexto = fechasReservadas.join(", ");
+  const fechasTexto = fechasReservadas.join(" al ");
   Swal.fire({
     title: `¿Desea confirmar su reservación de viaje a ${ciudadSeleccionada.nombre}?`,
-    text: `Para las fechas: ${fechasTexto}`,
+    text: `Para las fechas: Del ${fechasTexto}`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#748e54",
@@ -355,25 +351,12 @@ function alertaConfirmacionViaje(imagen, ciudad, clima) {
 const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
 function guardarReserva() {
   const reserva = {
+    id: Date.now(),
     ...ciudadSeleccionada,
     fechas: fechasReservadas,
     datosCliente: datosUsuario,
     fechaReserva: new Date().toISOString(),
   };
-
-  // Verificar si ya existe una reserva para esta ciudad
-  const existeIndex = reservas.findIndex(
-    (r) => r.nombre === ciudadSeleccionada.nombre
-  );
-
-  if (existeIndex !== -1) {
-    // Actualizar reserva existente
-    reservas[existeIndex] = reserva;
-  } else {
-    // Agregar nueva reserva
-    reservas.push(reserva);
-  }
-
+  reservas.push(reserva);
   localStorage.setItem("reservas", JSON.stringify(reservas));
-  console.log("Reserva guardada:", reserva);
 }
