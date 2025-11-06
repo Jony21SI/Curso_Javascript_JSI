@@ -8,12 +8,14 @@
   flex-direction: column;
   align-items: center;
   background-color: #fce0bb;
+  background: linear-gradient(to right, #eacda3, #d6ae7b);
   min-height: 100vh;
 }
 .header {
   display: flex;
   justify-content: space-between;
   background-color: #fce0bb;
+  background: linear-gradient(to right, #eacda3, #d6ae7b);
   text-align: center;
   padding: 20px;
   width: 100%;
@@ -76,6 +78,7 @@
   justify-content: center;
   gap: 10px;
   background-color: #fce0bb;
+  background: linear-gradient(to right, #eacda3, #d6ae7b);
   padding: 10px;
 }
 #cards-section div {
@@ -87,6 +90,7 @@
   height: 21rem;
   border: 2px solid black;
   background-color: #f8b763;
+  background: linear-gradient(to right, #f2b362, #e7ba7f);
   border-radius: 4px;
   animation: fadeIn 800ms forwards;
 }
@@ -194,4 +198,56 @@
   color: #980808;
   font-weight: bold;
   border-radius: 4px;
+}
+.delete-card-reserva {
+  background-color: #ff6f61;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 10rem;
+  align-self: center;
+}
+.delete-card-reserva:hover {
+  background-color: #e65b50;
+  cursor: pointer;
+}
+.edit-reserva-button {
+  background-color: #4da6ff;
+  color: white;
+  border: none;
+  padding: 10px;
+  border-radius: 4px;
+  display: flex;
+  align-items: center;
+  gap: 5px;
+  width: 10rem;
+  align-self: center;
+}
+.edit-reserva-button:hover {
+  background-color: #006bb3;
+  cursor: pointer;
+}
+#cards-section-reservas {
+  display: flex;
+  flex-wrap: wrap;
+  justify-content: center;
+  gap: 10px;
+  padding: 10px;
+}
+#cards-section-reservas div {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 5px;
+  width: 20rem;
+  height: 29rem;
+  border: 2px solid black;
+  background-color: #f8b763;
+  background: linear-gradient(to right, #f2b362, #e7ba7f);
+  border-radius: 4px;
+  animation: fadeIn 800ms forwards;
 }

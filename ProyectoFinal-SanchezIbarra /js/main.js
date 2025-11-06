@@ -13,6 +13,8 @@ obtenerCiudades();
 let ciudades = [];
 let mostrandoFavoritas = false;
 let fechasReservadas = [];
+let ciudadSeleccionada = null;
+let datosUsuario = null;
 let contenedorCiudades = document.getElementById("cards-section");
 
 function renderCiudades(ciudades) {
@@ -44,11 +46,12 @@ function renderCiudades(ciudades) {
     const reservarButton = card.querySelector(".reservar-button");
     reservarButton.addEventListener("click", function (event) {
       event.stopPropagation();
-      openCalendarModal();
+      ciudadSeleccionada = ciudad;
+      openCalendarModal(ciudad.nombre);
     });
   });
 }
-
+//Añadir a favoritos
 const favoritos = JSON.parse(localStorage.getItem("favoritos")) || [];
 renderCiudades(ciudades);
 function addFavorites(index) {
@@ -123,7 +126,7 @@ function removeFavorite(nombreCiudad) {
   removeFavoritesAlert();
 }
 
-//Toastify Add Favorites Alert
+//Toastify Alerta Añadir a Favoritos
 function addfavoritesAlert() {
   Toastify({
     text: "Ciudad añadida a favoritas",
@@ -134,7 +137,7 @@ function addfavoritesAlert() {
     },
   }).showToast();
 }
-//Toastify Add Favorites Alert
+//Toastify Alerta Eliminar de Favoritos
 function removeFavoritesAlert() {
   Toastify({
     text: "Ciudad eliminada de favoritas",
@@ -150,7 +153,6 @@ function removeFavoritesAlert() {
 function displayCalendar() {
   const { Calendar } = window.VanillaCalendarPro;
 
-  // Obtener el elemento del DOM del modal activo de SweetAlert
   const swalContainer = document.querySelector(".swal2-html-container");
   const calendarElement = swalContainer.querySelector(".calendar-placeholder");
 
@@ -215,16 +217,22 @@ function displayCalendar() {
   calendar.init();
 }
 
+// Boton para Reservar
 function saveDates() {
   const saveDates = document.getElementById("calendar-button");
   saveDates.addEventListener("click", () => {
+    if (fechasReservadas.length === 0) {
+      Swal.showValidationMessage("Por favor, selecciona al menos una fecha");
+      return;
+    }
     console.log("Tus fechas se guardaron exitosamente");
     console.log(fechasReservadas);
+    Swal.close();
     openModalFormulario();
   });
 }
 
-//Funcion para llenar el formulario con datos del cliente
+//Funcion para llenar el formulario con datos del cliente (Simulación Checkout)
 function openModalFormulario() {
   Swal.fire({
     title: "<strong>Ingrese sus datos:</strong>",
@@ -280,7 +288,8 @@ function openModalFormulario() {
     },
   }).then((result) => {
     if (result.isConfirmed) {
-      console.log("Datos guardados:", result.value);
+      datosUsuario = result.value;
+      console.log("Datos guardados:", datosUsuario);
       confirmarViaje();
     } else if (result.isDenied) {
       console.log("El usuario canceló la operación.");
@@ -289,10 +298,9 @@ function openModalFormulario() {
 }
 
 //SweetAlert Calendar Modal
-//Agregar el nombre de la ciudad adentro del Strong (Pasar a la función el nombre de la ciudad)
-function openCalendarModal() {
+function openCalendarModal(nombreCiudad) {
   Swal.fire({
-    title: "<strong>Selecciona las fechas de tu viaje</strong>",
+    title: `<strong>Selecciona las fechas de tu viaje a ${nombreCiudad}</strong>`,
     html: `
       <div class="calendar-placeholder">Calendario</div>
     `,
@@ -310,9 +318,10 @@ function openCalendarModal() {
 
 //Confirmación de Agenda de viaje
 function confirmarViaje() {
+  const fechasTexto = fechasReservadas.join(", ");
   Swal.fire({
-    title: "Desea confirmar su reservación de viaje a ${viaje}?",
-    text: "Para las fechas: ${fecha}",
+    title: `¿Desea confirmar su reservación de viaje a ${ciudadSeleccionada.nombre}?`,
+    text: `Para las fechas: ${fechasTexto}`,
     icon: "warning",
     showCancelButton: true,
     confirmButtonColor: "#748e54",
@@ -320,10 +329,11 @@ function confirmarViaje() {
     confirmButtonText: "Agendar",
   }).then((result) => {
     if (result.isConfirmed) {
+      guardarReserva();
       alertaConfirmacionViaje(
-        ciudades[1].imagen,
-        ciudades[1].nombre,
-        ciudades[1].clima
+        ciudadSeleccionada.imagen,
+        ciudadSeleccionada.nombre,
+        ciudadSeleccionada.clima
       );
     }
   });
@@ -340,4 +350,30 @@ function alertaConfirmacionViaje(imagen, ciudad, clima) {
     imageAlt: `Imagen de ${ciudad}`,
     confirmButtonColor: "#748e54",
   });
+}
+//Guardar Reserva
+const reservas = JSON.parse(localStorage.getItem("reservas")) || [];
+function guardarReserva() {
+  const reserva = {
+    ...ciudadSeleccionada,
+    fechas: fechasReservadas,
+    datosCliente: datosUsuario,
+    fechaReserva: new Date().toISOString(),
+  };
+
+  // Verificar si ya existe una reserva para esta ciudad
+  const existeIndex = reservas.findIndex(
+    (r) => r.nombre === ciudadSeleccionada.nombre
+  );
+
+  if (existeIndex !== -1) {
+    // Actualizar reserva existente
+    reservas[existeIndex] = reserva;
+  } else {
+    // Agregar nueva reserva
+    reservas.push(reserva);
+  }
+
+  localStorage.setItem("reservas", JSON.stringify(reservas));
+  console.log("Reserva guardada:", reserva);
 }
